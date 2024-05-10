@@ -1,6 +1,5 @@
 # Use the official Ubuntu image as a base
-FROM kalilinux/kali-rolling:latest
-
+FROM linuxserver/letsencrypt
 # Update package lists and install necessary packages
 RUN apt-get update && apt-get install -y \
     python3 \
