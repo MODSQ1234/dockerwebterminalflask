@@ -1,18 +1,22 @@
 # Use the official Ubuntu image as a base
 FROM linuxserver/letsencrypt
 
-# Install Python and pip manually
-RUN curl -O https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tgz && \
-    tar -xvf Python-3.9.7.tgz && \
+# Install necessary dependencies
+RUN apk add --no-cache \
+    wget \
+    ca-certificates \
+    openssl
+
+# Download and install Python
+RUN wget https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tar.xz && \
+    tar -xvf Python-3.9.7.tar.xz && \
     cd Python-3.9.7 && \
     ./configure && \
     make && \
     make install && \
     cd .. && \
     rm -rf Python-3.9.7* && \
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python3 get-pip.py && \
-    rm get-pip.py
+    python3 -m ensurepip
 
 # Set the working directory in the container
 WORKDIR /app
@@ -21,7 +25,7 @@ WORKDIR /app
 COPY . /app
 
 # Install pyxtermjs
-RUN pip3 install -r requirements.txt --break-system-packages
+RUN pip3 install -r requirements.txt --no-cache-dir
 
 # Run the pyxtermjs command when the container starts
 CMD ["python3", "main.py"]
