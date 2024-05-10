@@ -1,10 +1,18 @@
 # Use the official Ubuntu image as a base
 FROM linuxserver/letsencrypt
-# Update package lists and install necessary packages
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    && rm -rf /var/lib/apt/lists/*
+
+# Install Python and pip manually
+RUN curl -O https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tgz && \
+    tar -xvf Python-3.9.7.tgz && \
+    cd Python-3.9.7 && \
+    ./configure && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf Python-3.9.7* && \
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python3 get-pip.py && \
+    rm get-pip.py
 
 # Set the working directory in the container
 WORKDIR /app
